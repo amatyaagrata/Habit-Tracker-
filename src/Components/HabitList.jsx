@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import HabitCard from './HabitCard';
 import AddHabitForm from './AddHabitForm';
+// import {sampleHabits} from '../data/sampleHabits.jsx';
 
 /* ── SVG Icons ───────────────────────────────── */
 const PlusIcon = ({ className = "w-5 h-5" }) => (

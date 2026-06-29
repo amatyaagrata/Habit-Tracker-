@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 
-/* ── SVG Icons ───────────────────────────────── */
+
+
+//SVG Icons 
+
 const CloseIcon = ({ className = "w-5 h-5" }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="18" y1="6" x2="6" y2="18"/>
@@ -87,7 +90,7 @@ const AddHabitForm = ({ onAdd, onCancel }) => {
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* Habit Name Input */}
+          {/* Input [Habit Name]*/}
           <div className="mb-5">
             <label className="block text-sm font-medium mb-2" style={{ color: '#527a6f' }}>
               Habit Name
@@ -106,7 +109,7 @@ const AddHabitForm = ({ onAdd, onCancel }) => {
             )}
           </div>
 
-          {/* Frequency Selection */}
+          {/* daily and weekly  */}
           <div className="mb-6">
             <label className="block text-sm font-medium mb-2" style={{ color: '#527a6f' }}>
               Frequency
@@ -131,7 +134,7 @@ const AddHabitForm = ({ onAdd, onCancel }) => {
             </div>
           </div>
 
-          {/* Action Buttons */}
+          {/* Button for the cancel and Create habit  */}
           <div className="flex gap-3">
             <button
               type="button"

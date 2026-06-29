@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import HabitList from './components/HabitList';
+import HabitList from './Components/HabitList.jsx';
 import { sampleHabits } from './data/sampleHabits';
 
 /* ── SVG Icons (inline) ─────────────────────── */
@@ -15,6 +15,13 @@ export default function App() {
 
   const handleAddHabit = (newHabit) => {
     setHabits([...habits, newHabit]);
+
+    // Send the new habit to the server to write it to sampleHabits.jsx
+    fetch('/api/habits', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newHabit),
+    }).catch(err => console.error('Failed to write habit to sampleHabits.jsx:', err));
   };
 
   const handleTickHabit = (habitId) => {
