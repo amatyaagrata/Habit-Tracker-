@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import HabitList from './Components/HabitList.jsx';
 import { sampleHabits } from './data/sampleHabits';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import AddHabitForm from './Components/AddHabitForm.jsx';
+import HabitCard from './Components/HabitCard.jsx';
 
-/* ── SVG Icons (inline) ─────────────────────── */
+
+/* SVG Icons */
 const LeafIcon = ({ className = "w-7 h-7" }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="#659287" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20c4 0 8.68-3.9 9-12z"/>
@@ -45,14 +49,28 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen">
+    <BrowserRouter>
       <Title />
-      <HabitList 
-        habits={habits} 
-        onAddHabit={handleAddHabit}
-        onTickHabit={handleTickHabit}
-      />
-    </div>
+      <Routes>
+        <Route path="/" element={
+          <HabitList 
+            habits={habits} 
+            onAddHabit={handleAddHabit}
+            onTickHabit={handleTickHabit}
+          />
+        } />
+        <Route path ="/AddHabitForm" element={
+          <AddHabitForm 
+            habits={habits} 
+            onAddHabit={handleAddHabit}
+            onTickHabit={handleTickHabit}
+          />
+        } />
+      </Routes>
+      <Routes>
+        <Route path="/habit/:id" element={<div>Habit Details Page</div>} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

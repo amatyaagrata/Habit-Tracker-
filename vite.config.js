@@ -5,50 +5,58 @@ import fs from 'fs'
 import path from 'path'
 
 /**
- * Vite plugin that adds a POST /api/habits endpoint.
- * When called, it appends a new habit to src/data/sampleHabits.jsx.
+ * A simple Vite server plugin to save new habits directly into the source file.
  */
 function habitsApi() {
   return {
     name: 'habits-api',
     configureServer(server) {
-      server.middlewares.use('/api/habits', async (req, res) => {
-        if (req.method !== 'POST') {
+      // Create an API route at POST/PUT /api/habits
+      server.middlewares.use('/api/habits', (req, res) => {
+        if (req.method !== 'POST' && req.method !== 'PUT') {
           res.statusCode = 405;
-          res.end('Method not allowed');
+          res.end('Only POST and PUT requests are allowed');
           return;
         }
 
-        // Read the request body
+        // 1. Read the incoming data
         let body = '';
-        for await (const chunk of req) {
+        req.on('data', chunk => {
           body += chunk;
-        }
+        });
 
-        try {
-          const newHabit = JSON.parse(body);
+        req.on('end', () => {
+          try {
+            const data = JSON.parse(body);
+            const filePath = path.resolve(__dirname, 'src/data/sampleHabits.jsx');
 
-          // Load current habits via Vite's SSR module system
-          const filePath = path.resolve(__dirname, 'src/data/sampleHabits.jsx');
-          const mod = await server.ssrLoadModule('/src/data/sampleHabits.jsx');
-          const currentHabits = [...mod.sampleHabits];
+            if (Array.isArray(data)) {
+              // 2. Overwrite the entire file with the updated array
+              const fileContent = `export const sampleHabits = ${JSON.stringify(data, null, 2)};\nexport default sampleHabits;\n`;
+              fs.writeFileSync(filePath, fileContent, 'utf-8');
+            } else {
+              // 3. Append single habit (original behavior)
+              let fileContent = fs.readFileSync(filePath, 'utf-8');
+              const closingBracketIndex = fileContent.lastIndexOf('];');
 
-          // Append the new habit
-          currentHabits.push(newHabit);
+              if (closingBracketIndex !== -1) {
+                const newHabitText = `,\n  ` + JSON.stringify(data, null, 2).replace(/\n/g, '\n  ');
+                fileContent = 
+                  fileContent.slice(0, closingBracketIndex) + 
+                  newHabitText + '\n' + 
+                  fileContent.slice(closingBracketIndex);
+                fs.writeFileSync(filePath, fileContent, 'utf-8');
+              }
+            }
 
-          // Generate the updated file content
-          const fileContent = `export const sampleHabits = ${JSON.stringify(currentHabits, null, 2)};\nexport default sampleHabits;\n`;
-
-          // Write back to the source file
-          fs.writeFileSync(filePath, fileContent, 'utf-8');
-
-          res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify({ success: true }));
-        } catch (err) {
-          console.error('Failed to update sampleHabits.jsx:', err);
-          res.statusCode = 500;
-          res.end(JSON.stringify({ error: err.message }));
-        }
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ success: true }));
+          } catch (err) {
+            console.error('Error saving habit:', err);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: 'Failed to save habit' }));
+          }
+        });
       });
     }
   };

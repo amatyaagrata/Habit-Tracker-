@@ -52,7 +52,7 @@ export const sampleHabits = [
   },
   {
     "id": 1782713336753,
-    "name": "taking medicine (before having something )\\",
+    "name": "Taking medicine (before having something )",
     "frequency": "daily",
     "streak": 0,
     "completedDates": [],

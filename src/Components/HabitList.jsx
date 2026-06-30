@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import HabitCard from './HabitCard';
 import AddHabitForm from './AddHabitForm';
-// import {sampleHabits} from '../data/sampleHabits.jsx';
+import { useNavigate } from 'react-router-dom';
+import { use } from 'react';
+
 
 /* ── SVG Icons ───────────────────────────────── */
 const PlusIcon = ({ className = "w-5 h-5" }) => (
@@ -50,6 +52,7 @@ const HabitList = ({ habits, onAddHabit, onTickHabit }) => {
     habit.completedDates?.includes(new Date().toDateString())
   ).length;
 
+  const navigate = useNavigate();
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Header with stats */}
@@ -60,8 +63,12 @@ const HabitList = ({ habits, onAddHabit, onTickHabit }) => {
           </p>
         </div>
         <button
-          onClick={() => setShowAddForm(true)}
+          onClick={() => {
+            navigate('/AddHabitForm');
+            setShowAddForm(true);
+          }}
           className="btn-primary flex items-center gap-2"
+          
         >
           <PlusIcon className="w-4 h-4" />
           New Habit

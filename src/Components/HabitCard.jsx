@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 /* ── SVG Icons ───────────────────────────────── */
 const FlameIcon = ({ className = "w-4 h-4" }) => (
@@ -27,6 +28,9 @@ const CheckIcon = ({ className = "w-4 h-4" }) => (
 
 const HabitCard = ({ habit, onTick }) => {
   const [isTicking, setIsTicking] = useState(false);
+  //use navigate function call 
+  const navigate = useNavigate();
+  
 
   const handleTick = () => {
     setIsTicking(true);
